@@ -19,7 +19,7 @@ class CreateBooksTable extends Migration
             $table->foreign("author_id")->references("id")->on("authors")->onDelete("cascade");
             $table->string("name");
             $table->string("desc");
-            $table->string("image");
+            $table->string("image")->nullable();
             $table->timestamp("publication_date");
         });
     }

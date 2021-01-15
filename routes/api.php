@@ -14,6 +14,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('register', 'UserController@register');
+Route::post('login', 'UserController@login');
+
+Route::apiResource('books', 'Api\\BookController')->except(['store', 'update', 'destroy']);
+Route::apiResource('authors', 'Api\\AuthorController')->except(['store', 'update', 'destroy']);
+
+Route::middleware('auth:api')->group(function () {
+    Route::post('logout', 'UserController@logout');
+    Route::get('me', 'UserController@about');
+
+    Route::apiResource('books', 'Api\\BookController');
+    Route::apiResource('authors', 'Api\\AuthorController');
 });
