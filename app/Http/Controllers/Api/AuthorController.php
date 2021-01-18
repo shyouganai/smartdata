@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Author;
+use App\Book;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AuthorResource;
+use App\Http\Resources\BookResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -32,10 +34,10 @@ class AuthorController extends Controller
     public function store(Request $request)
     {
         $v = Validator::make($request->all(), [
-            'author_id' => 'required',
-            'name' => 'required',
-            'desc' => 'required',
-            'publication_date' => 'required|date',
+            'name' => 'required|unique:authors',
+            'bio' => 'required',
+            'birth_date' => 'required|date',
+            'died_date' => 'nullable|date',
         ]);
 
         if ($v->fails())
@@ -69,22 +71,28 @@ class AuthorController extends Controller
         return response()->json(['data' => ['status' => 'ok']]);
     }
 
+    public function books(Request $request, $author_id)
+    {
+        $data = Book::query()->where('author_id', $author_id)->get();
+
+        return BookResource::collection($data);
+    }
+
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Author $author)
     {
-        $coll = collect($request->all());
-        if ($request->hasFile("file")) {
-            $file = $request->file("file");
-            $fileName = Str::random() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path("images"), $fileName);
-            $coll->forget("file");
-            $coll->put("image", $fileName);
-            unlink(public_path("images/" . $request->image));
-        }
-        $author->update($coll->toArray());
-        $author->refresh();
+        $v = Validator::make($request->all(), [
+            'name' => 'unique:authors',
+            'birth_date' => 'date',
+            'died_date' => 'date',
+        ]);
+
+        if ($v->fails())
+            return response()->json($v->errors(), 422);
+
+        $author->update($request->all());
 
         return new AuthorResource($author);
     }

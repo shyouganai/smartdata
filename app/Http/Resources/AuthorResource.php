@@ -18,7 +18,7 @@ class AuthorResource extends JsonResource
             "id" => $this->id,
             "name" => $this->name,
             "bio" => $this->bio,
-            "image" => $this->imageUrl(),
+            "image" => $this->image ? $this->imageUrl() : null,
             "birth_date" => $this->birth_date,
             "died_date" => $this->died_date,
         ];

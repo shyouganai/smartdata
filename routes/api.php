@@ -17,13 +17,33 @@ use Illuminate\Support\Facades\Route;
 Route::post('register', 'UserController@register');
 Route::post('login', 'UserController@login');
 
-Route::apiResource('books', 'Api\\BookController')->except(['store', 'update', 'destroy']);
-Route::apiResource('authors', 'Api\\AuthorController')->except(['store', 'update', 'destroy']);
+Route::group(['namespace' => 'Api'], function () {
+    Route::group(['name' => 'authors', 'prefix' => 'authors'], function() {
+        Route::apiResource('', 'AuthorController')->except(['store', 'update', 'destroy']);
+        Route::get('{author_id}/books', 'AuthorController@books');
+    });
+    Route::group(['name' => 'books', 'prefix' => 'books'], function() {
+        Route::apiResource('', 'BookController')->except(['store', 'update', 'destroy']);
+    });
+});
 
-Route::middleware('auth:api')->group(function () {
+    Route::middleware('auth:api')->group(function () {
     Route::post('logout', 'UserController@logout');
     Route::get('me', 'UserController@about');
+    Route::get('favorite-books', 'UserController@favoriteBooks');
 
-    Route::apiResource('books', 'Api\\BookController');
-    Route::apiResource('authors', 'Api\\AuthorController');
+    Route::group(['namespace' => 'Api'], function () {
+        Route::group(['name' => 'books', 'prefix' => 'books'], function() {
+            Route::apiResource('', 'BookController')->only(['index', 'show']);
+            Route::group(['prefix' => '{book_id}'], function() {
+                Route::post('upload-image', 'BookController@uploadImage');
+                Route::post('add-to-favorites', 'BookController@addToFavorites');
+                Route::post('remove-from-favorites', 'BookController@removeFromFavorites');
+            });
+        });
+        Route::group(['name' => 'authors', 'prefix' => 'authors'], function() {
+            Route::apiResource('', 'AuthorController')->only(['index', 'show']);
+            Route::post('{author_id}/upload-image', 'AuthorController@uploadImage');
+        });
+    });
 });

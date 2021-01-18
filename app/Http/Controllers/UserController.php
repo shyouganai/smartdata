@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\BookResource;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -71,5 +72,10 @@ class UserController extends Controller
         $user = Auth::user()->only(['id', 'name', 'email']);
         unset($user['api_token']);
         return response()->json(['data' => $user]);
+    }
+
+    public function favoriteBooks()
+    {
+        return BookResource::collection(Auth::user()->favoriteBooks()->get());
     }
 }

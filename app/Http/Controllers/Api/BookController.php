@@ -6,6 +6,7 @@ use App\Book;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BookResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -69,6 +70,23 @@ class BookController extends Controller
         return response()->json(['data' => ['status' => 'ok']]);
     }
 
+    public function addToFavorites(Request $request, $book_id)
+    {
+        $books = Auth::user()->favoriteBooks();
+        if (!$books->where('book_id', $book_id)->exists()) {
+            $books->attach([$book_id]);
+        }
+
+        return response()->json(['data' => ['status' => 'ok']]);
+    }
+
+    public function removeFromFavorites(Request $request, $book_id)
+    {
+        Auth::user()->favoriteBooks()->detach([$book_id]);
+
+        return response()->json(['data' => ['status' => 'ok']]);
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -77,8 +95,15 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        $book->update($coll->toArray());
-        $book->refresh();
+        $v = Validator::make($request->all(), [
+            'author_id' => 'exists:authors,id',
+            'publication_date' => 'date',
+        ]);
+
+        if ($v->fails())
+            return response()->json($v->errors(), 422);
+
+        $book->update($request->all());
 
         return new BookResource($book);
     }
@@ -93,6 +118,6 @@ class BookController extends Controller
     {
         $book->delete();
 
-        return response()->json(["id" => $book->id], 200);
+        return response(null, 204);
     }
 }

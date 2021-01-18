@@ -29,6 +29,11 @@ class User extends Authenticatable
         'password',
     ];
 
+    public function favoriteBooks()
+    {
+        return $this->belongsToMany(Book::class, 'user_favorite_books');
+    }
+
     public function generateToken()
     {
         $this->api_token = Str::random();

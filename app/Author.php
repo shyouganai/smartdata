@@ -7,8 +7,12 @@ use Illuminate\Support\Carbon;
 
 class Author extends Model
 {
-    protected $guarded = [];
-    protected $withCount = ["books"];
+    protected $fillable = [
+        'name',
+        'bio',
+        'image',
+        'birth_date', 'died_date',
+    ];
     protected $dates = ["birth_date", "died_date"];
     public $timestamps = null;
 

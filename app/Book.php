@@ -7,8 +7,13 @@ use Illuminate\Support\Carbon;
 
 class Book extends Model
 {
-    protected $guarded = [];
-    protected $with = ["author:id,name"];
+    protected $fillable = [
+        'author_id',
+        'name',
+        'desc',
+        'image',
+        'publication_date',
+    ];
     protected $casts = ["publication_date" => "date:Y"];
     public $timestamps = null;
 
@@ -23,6 +28,11 @@ class Book extends Model
     public function getPublicationDateAttribute($value)
     {
         return $value ? Carbon::parse($value)->format("Y-m-d") : null;
+    }
+
+    public function usersWhoAddToFavorites()
+    {
+        return $this->belongsToMany('book_id', 'user_favorites_books');
     }
 
     public function author()
