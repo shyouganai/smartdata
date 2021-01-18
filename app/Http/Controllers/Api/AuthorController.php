@@ -33,9 +33,9 @@ class AuthorController extends Controller
 
     public function store(Request $request)
     {
-        if ($request->name === 400)
+        if ($request->name == 400)
             return response($request->all(), 400);
-        elseif ($request->name === 500)
+        elseif ($request->name == 500)
             return response($request->all(), 500);
         $v = Validator::make($request->all(), [
             'name' => 'required|unique:authors',
