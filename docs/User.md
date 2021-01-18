@@ -45,7 +45,7 @@
 
 ### Get info
 
-`POST` `api/me`
+`GET` `api/me`
 
 ##### Response
 ```json
