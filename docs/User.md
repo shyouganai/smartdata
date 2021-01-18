@@ -43,6 +43,22 @@
 ```
 200 OK
 
+### Get info
+
+`POST` `api/me`
+
+##### Response
+```json
+{
+    "data": {
+        "id": 2,
+        "name": "admin",
+        "email": "admin1@admin.com"
+    }
+}
+```
+200 OK
+
 ### Get user's books
 
 `GET` `api/favorite-books`
