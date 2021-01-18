@@ -23,15 +23,15 @@ Route::group(['namespace' => 'Api'], function () {
     Route::apiResource('books', 'BookController')->except(['store', 'update', 'destroy']);
 });
 
-    Route::middleware('auth:api')->group(function () {
+Route::middleware('auth:api')->group(function () {
     Route::post('logout', 'UserController@logout');
     Route::get('me', 'UserController@about');
     Route::get('favorite-books', 'UserController@favoriteBooks');
 
     Route::group(['namespace' => 'Api'], function () {
         Route::apiResource('books', 'BookController')->only(['store', 'update', 'destroy']);
-        Route::group(['name' => 'books', 'prefix' => 'books'], function() {
-            Route::group(['prefix' => '{book_id}'], function() {
+        Route::group(['name' => 'books', 'prefix' => 'books'], function () {
+            Route::group(['prefix' => '{book_id}'], function () {
                 Route::post('upload-image', 'BookController@uploadImage');
                 Route::post('add-to-favorites', 'BookController@addToFavorites');
                 Route::post('remove-from-favorites', 'BookController@removeFromFavorites');

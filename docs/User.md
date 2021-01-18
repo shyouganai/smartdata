@@ -47,6 +47,9 @@
 
 `GET` `api/me`
 
+##### Headers
+`Authorization: Bearer {token}`
+
 ##### Response
 ```json
 {
