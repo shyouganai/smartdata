@@ -68,7 +68,7 @@ class AuthorController extends Controller
 
         $author->update(['image' => $fileName]);
 
-        return response()->json(['data' => ['status' => 'ok']]);
+        return response()->json(['data' => ['image' => $author->imageUrl()]]);
     }
 
     public function books(Request $request, $author_id)
@@ -84,7 +84,6 @@ class AuthorController extends Controller
     public function update(Request $request, Author $author)
     {
         $v = Validator::make($request->all(), [
-            'name' => 'unique:authors',
             'birth_date' => 'date',
             'died_date' => 'date',
         ]);

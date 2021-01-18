@@ -67,7 +67,7 @@ class BookController extends Controller
 
         $book->update(['image' => $fileName]);
 
-        return response()->json(['data' => ['status' => 'ok']]);
+        return response()->json(['data' => ['image' => $book->imageUrl()]]);
     }
 
     public function addToFavorites(Request $request, $book_id)
